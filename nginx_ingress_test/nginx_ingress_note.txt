@@ -1,0 +1,15 @@
+link: https://gaunacode.com/creating-an-https-ingress-controller-with-your-own-tls-certificate-and-with-public-static-ip-on-aks
+
+choco install kubernetes-helm
+kubectl create ns ingress
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
+helm install nginx-ingress ingress-nginx/ingress-nginx --set rbac.create=false --namespace ingress --set controller.replicaCount=2 --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux --set controller.service.loadBalancerIP="127.0.0.1" --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="[dns label]"
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -out my-app.crt -keyout my-app.key -subj "/CN=my-app.com/O=my-app-tls"
+kubectl create secret tls aks-ingress-tls --namespace ingress-test --key my-app.key --cert my-app.crt
+
+kubectl apply -f app1.yaml
+kubectl apply -f app2.yaml
+kubectl apply -f ingress.yaml

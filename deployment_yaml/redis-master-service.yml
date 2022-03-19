@@ -1,0 +1,21 @@
+# redis master service deployment
+apiVersion: v1 # for version before 1.9.0 use apps/v1beta2
+kind: Service
+metadata:
+    name: redis-master-svc
+    labels:
+        app: guestbook
+        role: master
+        tier: backend
+spec:
+    ports:
+    - port: 6379
+      targetPort: 6379
+    type: ClusterIp
+    selector:
+        app: redis
+        role: master
+        tier: backend
+                   
+        
+    

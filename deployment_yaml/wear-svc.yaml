@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: wear-deploy-svc
+  name: wear-deploy-svc
+  namespace: app-ingress
+spec:
+  ports:
+  - name: wear-svc-port
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: wear-deploy
+  type: ClusterIP
+status:
+  loadBalancer: {}
